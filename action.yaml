@@ -1,0 +1,16 @@
+name: "PyProject Version Action"
+description: "Ensures the next Git tag version in pyproject.toml aligns with label used in Pull-Request title."
+
+inputs:
+  repo-token:
+    description: "A github token for API access"
+    required: true
+
+runs:
+  using: "composite"
+  steps:
+    - run: uv sync
+      shell: bash
+
+    - run: uv run pyprojectversion
+      shell: bash
