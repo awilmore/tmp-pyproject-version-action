@@ -9,11 +9,13 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: uv sync
+    - run: uv --directory ${{ github.action_path }} sync
       shell: bash
 
-    - run: uv pip install -e .
+    - run: uv --directory ${{ github.action_path }} pip install -e .
       shell: bash
 
-    - run: uv run pyprojectversion
+    - run: uv --directory ${{ github.action_path }} run pyprojectversion
       shell: bash
+      env:
+        GITHUB_TOKEN: ${{ github.event.inputs.repo-token }}
