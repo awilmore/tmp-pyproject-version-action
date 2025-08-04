@@ -27,7 +27,7 @@ This project runs before a Pull-Request is merged, and checks that the version v
 
 Below is an example of how Github Action can be enabled on a Github project:
 
-```
+```yaml
 # When a pull request is opened, updated or merged, run the tag check
 on:
   pull_request:
@@ -39,7 +39,9 @@ jobs:
   tag_check:
     runs-on: ubuntu-latest
     name: "PyProject Version Check"
-
+    permissions:
+      pull-requests: read
+    
     steps:
     - uses: actions/checkout@v4
       with:
@@ -49,3 +51,66 @@ jobs:
       with:
         repo-token: ${{ secrets.GITHUB_TOKEN }}
 ```
+
+**Important**: The `permissions: pull-requests: read` is required for the action to access PR details via the GitHub API.
+
+## Development
+
+### Prerequisites
+
+- Python 3.13+
+- Git repository with tags following `v*.*.*` pattern
+
+### Setup
+
+1. Clone the repository:
+   ```bash
+   git clone <repository-url>
+   cd pyproject-version-action
+   ```
+
+2. Create and activate virtual environment:
+   ```bash
+   make venv
+   source .venv/bin/activate
+   ```
+
+### Development Commands
+
+| Command | Description |
+|---------|-------------|
+| `make venv` | Create/activate Python virtual environment |
+| `make test` | Run unit tests with coverage |
+| `make fmt` | Format code using ruff |
+| `make check` | Run format, lint, and type checks |
+| `make check-fmt` | Check code formatting |
+| `make check-lint` | Run linting checks |
+| `make check-type` | Run type checking |
+| `make clean` | Clean Python artifacts |
+
+### Running Tests
+
+Run tests using either method:
+
+```bash
+# Direct pytest execution
+.venv/bin/python3 -m pytest tests -v
+
+# Via Makefile (includes coverage)
+make test
+```
+
+### Project Structure
+
+```
+├── action.py              # Main action script
+├── action.yaml            # GitHub Action configuration
+├── requirements.txt       # Runtime dependencies
+├── requirements-dev.txt   # Development dependencies
+├── tests/
+│   └── test_action.py     # Unit tests
+├── reports/
+│   └── coverage.xml       # Test coverage report
+└── Makefile               # Development commands
+```
+

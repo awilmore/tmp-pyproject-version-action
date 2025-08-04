@@ -16,9 +16,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: install uv
-        uses: astral-sh/setup-uv@v5
-
       - name: make venv
         run: make venv
 
