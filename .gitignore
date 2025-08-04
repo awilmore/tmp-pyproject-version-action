@@ -19,3 +19,4 @@ cs-report.json
 working/
 TODO.md
 *.bak
+.claude/

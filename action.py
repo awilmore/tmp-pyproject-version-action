@@ -85,7 +85,11 @@ def determine_next_version(git_describe, pr_title):
         return git_describe
 
     else:
-        die(["One of the following - [major], [minor], [patch], [notag] - not found in PR title"])
+        die(
+            [
+                "One of the following - [major], [minor], [patch], [notag] - not found in PR title"
+            ]
+        )
 
 
 # Increment tag based on PR title
