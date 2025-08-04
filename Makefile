@@ -4,25 +4,12 @@ include Makehelp.mk
 
 ###Core
 
-## Create uv.lock for venv
-uvsync:
-	uv sync --no-install-project --all-extras --upgrade
-	uv lock --check
-.PHONY: uvsync
-
-
 ## Create/activate python virtualenv
 venv:
-	uv sync --no-install-project --frozen
+	python3 -m venv .venv && . .venv/bin/activate && \
+	pip install --upgrade pip && \
+	pip install -r requirements.txt -r requirements-dev.txt
 .PHONY: venv
-
-
-## Perform unit tests
-test:
-	uv run coverage run -m pytest -v
-	uv run coverage xml -o reports/coverage.xml
-	uv run coverage report
-.PHONY: test
 
 
 ## Perform fmt, lint and type checks
@@ -30,41 +17,41 @@ check: check-fmt check-lint check-type
 .PHONY: check
 
 
-## Perform code format using ruff
+## Format python code using black
+fmt:
+	. .venv/bin/activate && ruff format . && ruff check --fix .
+.PHONY: fmt
+
+
+## Perform code format using black
 check-fmt:
-	uv run ruff format --check src tests
+	. .venv/bin/activate && ruff format --check .
 .PHONY: check-fmt
 
 
 ## Perform pylint check
 check-lint:
-	uv run ruff check .
+	. .venv/bin/activate && ruff check .
 .PHONY: check-lint
 
 
 ## Perform mypy check
 check-type:
-	uv run mypy src tests
+	. .venv/bin/activate && mypy app tests
 .PHONY: check-type
 
 
-## Format python code using ruff
-fmt:
-	uv run ruff format src tests
-	uv run ruff check --fix src tests
-.PHONY: fmt
 
-
-## Execute pyprojectversion script
-run:
-	uv run pyprojectversion
-.PHONY: run
+## Perform unit tests
+test:
+	. .venv/bin/activate && \
+	coverage run -m pytest -v && \
+	coverage xml -o reports/coverage.xml
+.PHONY: test
 
 
 ## Clean python artefacts
 clean:
-	@find lambdas -type f -name "*.pyc" -delete
-	@find lambdas -type d -name "__pycache__" -delete
 	@rm -rf .pytest_cache .ruff_cache reports
 	@echo "Cleanup complete."
 .PHONY: clean

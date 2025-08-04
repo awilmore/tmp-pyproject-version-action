@@ -9,13 +9,15 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - run: uv --directory ${{ github.action_path }} sync
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+
+    - run: pip install -r ${{ github.action_path }}/requirements.txt
       shell: bash
 
-    - run: uv --directory ${{ github.action_path }} pip install -e .
-      shell: bash
-
-    - run: uv --directory ${{ github.action_path }} run pyprojectversion
+    - run: ${{ github.action_path }}/action.py
       shell: bash
       env:
-        GITHUB_TOKEN: ${{ github.event.inputs.repo-token }}
+        GITHUB_TOKEN: ${{ inputs.repo-token }}
